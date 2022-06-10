@@ -76,6 +76,9 @@ allocproc(int ticket)
   struct proc *p;
   char *sp;
 
+  if(ticket != LOW || ticket != MID || ticket != HIGH || ticket != KERNEL)
+    return 0;
+
   acquire(&ptable.lock);
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
@@ -177,7 +180,7 @@ growproc(int n)
   return 0;
 }
 
-// Create a new process copying p as the parent.
+// Create a new process copying p as the parent wich one priority(LOW:50, MID:100, HIGH:200).
 // Sets up stack to return as if from system call.
 // Caller must set state of returned proc to RUNNABLE.
 int
