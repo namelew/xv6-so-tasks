@@ -76,9 +76,6 @@ allocproc(int ticket)
   struct proc *p;
   char *sp;
 
-  if(ticket != LOW || ticket != MID || ticket != HIGH || ticket != KERNEL)
-    return 0;
-
   acquire(&ptable.lock);
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
