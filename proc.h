@@ -41,6 +41,7 @@ struct proc {
   char *kstack;                // Bottom of kernel stack for this process
   enum procstate state;        // Process state
   int pid;                     // Process ID
+  int ticket;                  // Rage of process tickets
   struct proc *parent;         // Parent process
   struct trapframe *tf;        // Trap frame for current syscall
   struct context *context;     // swtch() here to run process
@@ -56,3 +57,9 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+
+// Privileges Levels
+#define KERNEL 300
+#define HIGH 200
+#define MID 100
+#define LOW 50

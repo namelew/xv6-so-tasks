@@ -71,7 +71,7 @@ myproc(void) {
 // state required to run in the kernel.
 // Otherwise return 0.
 static struct proc*
-allocproc(void)
+allocproc(int ticket)
 {
   struct proc *p;
   char *sp;
@@ -90,6 +90,9 @@ found:
   p->pid = nextpid++;
 
   release(&ptable.lock);
+
+  // Set tickets
+  p->ticket = ticket;
 
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
@@ -123,7 +126,7 @@ userinit(void)
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
 
-  p = allocproc();
+  p = allocproc(MID);
   
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
@@ -185,7 +188,7 @@ fork(void)
   struct proc *curproc = myproc();
 
   // Allocate process.
-  if((np = allocproc()) == 0){
+  if((np = allocproc(0)) == 0){
     return -1;
   }
 
@@ -199,6 +202,7 @@ fork(void)
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
+  np->ticket = curproc->ticket;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -325,6 +329,7 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
+  int maxTicket = 0;
   
   for(;;){
     // Enable interrupts on this processor.
@@ -332,6 +337,11 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+      maxTicket += p->ticket;
+    }
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
