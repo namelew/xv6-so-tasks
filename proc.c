@@ -126,7 +126,7 @@ userinit(void)
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
 
-  p = allocproc(MID);
+  p = allocproc(KERNEL);
   
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
@@ -181,14 +181,14 @@ growproc(int n)
 // Sets up stack to return as if from system call.
 // Caller must set state of returned proc to RUNNABLE.
 int
-fork(void)
+fork(int ticket)
 {
   int i, pid;
   struct proc *np;
   struct proc *curproc = myproc();
 
   // Allocate process.
-  if((np = allocproc(0)) == 0){
+  if((np = allocproc(ticket)) == 0){
     return -1;
   }
 
@@ -202,7 +202,7 @@ fork(void)
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
-  np->ticket = curproc->ticket;
+  np->ticket = ticket;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
