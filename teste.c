@@ -2,17 +2,21 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-	
+
+#define N 9
 //passing command line arguments
 	
 int main(int argc, char *argv[])
 {
-    for(int j = 0; j < 2; j++)
+    int tickets[N] = {50, 400, 100, 200, 400, 50, 200, 100, 50};
+    
+    for(int j = 0; j < N; j++)
     {
-        int pid = fork(50);
+        printf(1, "\nPai\n");
+        int pid = fork(tickets[j]);
         if (pid){
-            for(int i = 0; i < 10; i++){
-                printf(2, "%d - %d\n", pid, i);
+            for(int i = 0; i < 100; i++){
+                printf(1, "%d: %d\n", pid, i);
             }
             exit();
         }
