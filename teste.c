@@ -1,22 +1,33 @@
-//A Simple C program
 #include "types.h"
 #include "stat.h"
 #include "user.h"
 
 #define N 9
-//passing command line arguments
-	
+#define SAMPLE 2147483647
+
+int factorial(int n){
+    if(n == 0)
+        return 1;
+    return n * factorial(n - 1);
+}
+
+int np(int n, int p){
+    return factorial(n)/(factorial(p)*factorial(n - p));
+}
+
 int main(int argc, char *argv[])
 {
-    int tickets[N] = {50, 400, 100, 200, 400, 50, 200, 100, 50};
+    int tickets[N] = {50, 50, 50, 400, 400, 400, 100, 100, 100};
     
     for(int j = 0; j < N; j++)
     {
-        printf(1, "\nPai\n");
         int pid = fork(tickets[j]);
         if (pid){
-            for(int i = 0; i < 100; i++){
-                printf(1, "%d: %d\n", pid, i);
+            for(int i = 0; i < SAMPLE; i++){
+                for(int k = 0; k < SAMPLE; k++){
+                    int result = np(np(i, k), np(k, i));
+                    result += result;
+                }
             }
             exit();
         }
@@ -24,5 +35,3 @@ int main(int argc, char *argv[])
     wait();
     exit();
 }
-
-// This code is contributed by sambhav228
