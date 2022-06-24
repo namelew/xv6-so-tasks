@@ -85,6 +85,10 @@ allocproc(int ticket)
   struct proc *p;
   char *sp;
 
+
+  if (ticket<50) ticket = 50;
+  if (ticket>400) ticket = 400;
+
   acquire(&ptable.lock);
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
