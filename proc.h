@@ -59,7 +59,7 @@ struct proc {
 //   expandable heap
 
 // Privileges Levels
-#define KERNEL 300
+#define KERNEL 400
 #define HIGH 200
 #define MID 100
 #define LOW 50
