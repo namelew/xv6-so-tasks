@@ -344,9 +344,7 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  long int maxTicket;
-  long int startRange;
-  unsigned int drawn;
+  int smallerStride = -1;
   
   for(;;){
     // Enable interrupts on this processor.
@@ -355,24 +353,31 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
 
-    maxTicket = 0;
     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
-      maxTicket += p->ticket;
+      smallerStride = p->stride;
+      break;
     }
-    if (!maxTicket){
+
+    if (smallerStride == -1){
       release(&ptable.lock);
       continue;
     }
 
-    drawn = rand() % maxTicket;
-    startRange = 0;
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+      if(p->stride < smallerStride){
+        smallerStride = p->stride;
+      }
+    }
 
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
-      if(drawn > startRange && drawn < (startRange + p->ticket)){
+      if(smallerStride == p->stride){
+        p->stride += KERNEL/p->ticket;
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
@@ -386,7 +391,6 @@ scheduler(void)
         c->proc = 0;
         break;
       }
-      startRange += p->ticket;
     }
     release(&ptable.lock);
   }
