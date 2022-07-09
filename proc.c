@@ -372,6 +372,7 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
       if(smallerStride == p->stride){
+        // plus the stride of the select process
         p->stride += KERNEL/p->ticket;
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
