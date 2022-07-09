@@ -106,6 +106,7 @@ found:
 
   // Set tickets
   p->ticket = ticket;
+  p->stride = 0;
 
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
@@ -216,6 +217,7 @@ fork(int ticket)
   np->parent = curproc;
   *np->tf = *curproc->tf;
   np->ticket = ticket;
+  np->stride = 0;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
