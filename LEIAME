@@ -3,12 +3,12 @@
     * receive a int tickets, only receive the follow numbers: 50, 100, 200, 400.
     * returns a error if receive a NULL or differente number
 
-- Lottery Scheduler
-    * In this implementation, is drawn a ticket from the next process that will be schedul
-    * Each process was a range of values and if the ticket is in that range, the process is schedul.
+- Stride Scheduler
+    * In this implementation, scheduler select the smaller stride runnable process to put in cpu
+    * After running, the stride of the process is plus by 400/nTickets
+    * All process, start with stride 0 and the tiebreaker is the pid of the process
 
 - Run Test
     * To run the test code, compile and run xv6 and tip the command "teste"
     * Gonna be running 9 process with differents number of tickets
-    * Each one print a message where is running
-    * In the end, run "kill" to end the test
+    * Each one print a message where end running
