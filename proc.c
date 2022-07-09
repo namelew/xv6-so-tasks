@@ -360,11 +360,6 @@ scheduler(void)
       break;
     }
 
-    if (smallerStride == -1){
-      release(&ptable.lock);
-      continue;
-    }
-
     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
