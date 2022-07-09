@@ -17,7 +17,7 @@ int np(int n, int p){
 
 int main(int argc, char *argv[])
 {
-    int tickets[N] = {50, 50, 50, 400, 400, 400, 100, 100, 100};
+    int tickets[N] = {200, 200, 200, 50, 50, 50, 400, 400, 400};
     int volatile k=0;
     for(int j = 0; j < N; j++)
     {
